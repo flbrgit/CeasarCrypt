@@ -8,7 +8,6 @@
 #define MODE_DECRYPT 2
 #define MODE_FILE 4
 #define MODE_TEXT 8
-#define MODE_SMALL 16
 
 
 struct alphabet {
@@ -20,10 +19,7 @@ struct alphabet {
 struct info {
     unsigned char mode;
     size_t len;
-    union {
-        unsigned char * file;
-        unsigned char * text;
-    };
+    unsigned char * data;
 };
 
 

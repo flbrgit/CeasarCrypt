@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
     char* endptr;
     long tmp;
 
-    while ((option = getopt(argc, argv, "t:f:o:edxk:s:")) != -1) {
+    while ((option = getopt(argc, argv, "t:f:o:edk:s:")) != -1) {
         switch (option) {
             case 't':
                 text = optarg;
@@ -33,9 +33,6 @@ int main(int argc, char *argv[]) {
                 break;
             case 'd':
                 mode |= MODE_DECRYPT;
-                break;
-            case 'x':
-                mode |= MODE_SMALL;
                 break;
             case 'k':
                 errno = 0;
@@ -90,29 +87,27 @@ int main(int argc, char *argv[]) {
             fclose(file);
             exit(1);
         }
-        i->file = buf;
+        i->data = buf;
         i->len = sb.st_size;
         fclose(file);
         printf("Converting...\n");
         convert(i, a, key);
         file = fopen(out, "wb");
         printf("Writing file...\n");
-        fwrite(i->file, sizeof(unsigned char), sb.st_size, file);
+        fwrite(i->data, sizeof(unsigned char), sb.st_size, file);
         fclose(file);
         free(buf);
         printf("Done.\n");
     } else if (mode & MODE_TEXT) {
-        i->text = (unsigned char *) text;
-        i->len = strlen(i->text);
+        i->data = (unsigned char *) text;
+        i->len = strlen(i->data);
         printf("Converting...\n");
         convert(i, a, key);
 
         printf("Output:");
-        print_list((char*)i->text, i->len);
+        print_list((char*)i->data, i->len);
     }
 
-    /*
-    */
 
     free(a->alphabet);
     free(a);
