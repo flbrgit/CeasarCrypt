@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
+#include "random.h"
 
 
 #define MODE_ENCRYPT 1
@@ -54,4 +55,4 @@ struct alphabet * create_alphabet(int mode);
  * @param size Size of the array
  * @param seed Seed to use
  */
-void shuffle_alphabet(unsigned char *array, size_t size, unsigned int seed);
+void shuffle_alphabet(unsigned char *array, size_t size, unsigned long long sd);

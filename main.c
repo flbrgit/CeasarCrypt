@@ -1,6 +1,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include "convert.h"
+#include "random.h"
 
 
 int main(int argc, char *argv[]) {
@@ -9,10 +10,10 @@ int main(int argc, char *argv[]) {
     char *filename = NULL;
     int mode = 0;
     int key = 0;
-    long seed = 0;
+    unsigned long long seed = 0;
     char* out = "./output";
     char* endptr;
-    long tmp;
+    unsigned long tmp;
 
     while ((option = getopt(argc, argv, "t:f:o:edk:s:")) != -1) {
         switch (option) {
@@ -26,7 +27,6 @@ int main(int argc, char *argv[]) {
                 break;
             case 'o':
                 out = optarg;
-                mode |= MODE_FILE;
                 break;
             case 'e':
                 mode |= MODE_ENCRYPT;
@@ -36,17 +36,17 @@ int main(int argc, char *argv[]) {
                 break;
             case 'k':
                 errno = 0;
-                tmp = strtol(optarg, &endptr, 10);
-                if (endptr == optarg || *endptr != '\0' || (errno == ERANGE && (tmp == LONG_MAX || tmp == LONG_MIN)) || (errno != 0 && tmp == 0)) {
+                long tmp1 = strtol(optarg, &endptr, 10);
+                if (endptr == optarg || *endptr != '\0' || (errno == ERANGE && (tmp1 == LONG_MAX || tmp1 == LONG_MIN)) || (errno != 0 && tmp1 == 0)) {
                     fprintf(stderr, "Key to big!\n");
                     exit(EXIT_FAILURE);
                 }
-                key = tmp;
+                key = tmp1;
                 break;
             case 's':
                 errno = 0;
-                tmp = strtol(optarg, &endptr, 10);
-                if (endptr == optarg || *endptr != '\0' || (errno == ERANGE && (tmp == LONG_MAX || tmp == LONG_MIN)) || (errno != 0 && tmp == 0)) {
+                tmp = strtoull(optarg, &endptr, 10);
+                if (endptr == optarg || *endptr != '\0' || (errno != 0 && tmp == 0)) {
                     fprintf(stderr, "Seed to big!\n");
                     exit(EXIT_FAILURE);
                 }
@@ -68,6 +68,8 @@ int main(int argc, char *argv[]) {
 
     struct alphabet * a = create_alphabet(mode);
     shuffle_alphabet(a->alphabet, a->length, seed);
+
+    print_list(a->alphabet, a->length);
 
     struct info * i = malloc(sizeof(struct info));
     i->mode = mode;

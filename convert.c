@@ -1,12 +1,12 @@
 #include "convert.h"
 
 
-void shuffle_alphabet(unsigned char *array, size_t size, unsigned int seed) {
-    srand(seed);
+void shuffle_alphabet(unsigned char *array, size_t size, unsigned long long sd) {
+    seed(*(uint64_t*)&sd, *(uint64_t*)(&sd+1));
     if (size > 1) {
         size_t i;
         for (i = 0; i < size - 1; i++) {
-            size_t j = i + rand() / (RAND_MAX / (size - i) + 1);
+            size_t j = i + next() / (UINT64_MAX / (size - i) + 1);
             unsigned char t = array[j];
             array[j] = array[i];
             array[i] = t;
